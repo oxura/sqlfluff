@@ -1,0 +1,31 @@
+LINENO 1;
+SELECT 1 AS result;
+GO
+
+LINENO 100
+SELECT 2 AS result;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.DoWork
+AS
+BEGIN
+    LINENO 10
+    SET NOCOUNT ON;
+    SELECT 1 AS result;
+END;
+GO
+
+CREATE PROCEDURE dbo.NestedWork
+AS
+BEGIN
+    IF @should_run = 1
+    BEGIN
+        LINENO 250;
+        PRINT 'working';
+    END;
+END;
+GO
+
+LINENO 500;
+LINENO 1000;
+SELECT ERROR_LINE() AS reported_line;

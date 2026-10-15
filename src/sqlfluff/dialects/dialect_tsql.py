@@ -54,6 +54,9 @@ tsql_dialect = ansi_dialect.copy_as(
     formatted_name="Microsoft T-SQL",
     docstring="""The dialect for `T-SQL`_ (aka Transact-SQL).
 
+``LINENO`` statements are supported both in batches and in procedure bodies,
+with or without a trailing semicolon.
+
 .. _`T-SQL`: https://docs.microsoft.com/en-us/sql/t-sql/language-reference""",
 )
 
@@ -938,6 +941,7 @@ class StatementSegment(ansi.StatementSegment):
             Ref("CloseCursorStatementSegment"),
             Ref("DeallocateCursorStatementSegment"),
             # Other statements
+            Ref("LinenoStatementSegment"),
             Ref("PrintStatementSegment"),
             Ref("RaiserrorStatementSegment"),
             Ref("DeclareStatementSegment"),
@@ -6703,6 +6707,16 @@ class SetLanguageStatementSegment(BaseSegment):
             Ref("BracketedIdentifierSegment"),
             Ref("NakedIdentifierSegment"),
         ),
+    )
+
+
+class LinenoStatementSegment(BaseSegment):
+    """Set the line number reported by subsequent statements."""
+
+    type = "lineno_statement"
+    match_grammar = Sequence(
+        "LINENO",
+        Ref("NumericLiteralSegment"),
     )
 
 
