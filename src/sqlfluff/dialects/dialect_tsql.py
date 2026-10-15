@@ -54,6 +54,9 @@ tsql_dialect = ansi_dialect.copy_as(
     formatted_name="Microsoft T-SQL",
     docstring="""The dialect for `T-SQL`_ (aka Transact-SQL).
 
+Memory-optimized table definitions support ``HASH`` indexes and their
+``BUCKET_COUNT`` option, including column and table constraints.
+
 .. _`T-SQL`: https://docs.microsoft.com/en-us/sql/t-sql/language-reference""",
 )
 
@@ -681,6 +684,7 @@ tsql_dialect.replace(
             "NONCLUSTERED",
             optional=True,
         ),
+        Ref.keyword("HASH", optional=True),
     ),
     FromClauseTerminatorGrammar=OneOf(
         "WHERE",
@@ -3427,6 +3431,7 @@ class RelationalIndexOptionsSegment(BaseSegment):
                             "ALLOW_PAGE_LOCKS",
                             "OPTIMIZE_FOR_SEQUENTIAL_KEY",
                             "MAXDOP",
+                            "BUCKET_COUNT",
                         ),
                         Ref("EqualsSegment"),
                         OneOf(
@@ -4203,6 +4208,7 @@ class ColumnConstraintSegment(BaseSegment):
                     "INDEX",
                     Ref("ObjectReferenceSegment"),  # index name
                     OneOf("CLUSTERED", "NONCLUSTERED", optional=True),
+                    Ref.keyword("HASH", optional=True),
                     # other optional blocks (RelationalIndexOptionsSegment,
                     # OnIndexOptionSegment,FilestreamOnOptionSegment) are mentioned
                     # above
@@ -5658,6 +5664,7 @@ class TableIndexSegment(BaseSegment):
             Sequence(
                 Sequence("UNIQUE", optional=True),
                 OneOf("CLUSTERED", "NONCLUSTERED", optional=True),
+                Ref.keyword("HASH", optional=True),
                 Ref("BracketedIndexColumnListGrammar"),
             ),
             Sequence("CLUSTERED", "COLUMNSTORE"),

@@ -1,0 +1,376 @@
+# YML test files are auto-generated from SQL files and should not be edited by
+# hand. To help enforce this, the "hash" field in the file must match a hash
+# computed by SQLFluff when running the tests. Please run
+# `python test/generate_parse_fixture_yml.py`  to generate them after adding or
+# altering SQL files.
+_hash: 5a6b28df63d9d7ff77bc872d810ef9a0dfd6390eb7c779dc1b263410aae4fe07
+file:
+  batch:
+  - statement:
+      create_table_statement:
+      - keyword: CREATE
+      - keyword: TABLE
+      - table_reference:
+        - naked_identifier: dbo
+        - dot: .
+        - naked_identifier: SessionState
+      - bracketed:
+        - start_bracket: (
+        - column_definition:
+            naked_identifier: SessionId
+            data_type:
+              keyword: VARCHAR
+              bracketed_arguments:
+                bracketed:
+                  start_bracket: (
+                  expression:
+                    integer_literal: '50'
+                  end_bracket: )
+            column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+        - comma: ','
+        - column_definition:
+            naked_identifier: Payload
+            data_type:
+              keyword: NVARCHAR
+              bracketed_arguments:
+                bracketed:
+                  start_bracket: (
+                  keyword: MAX
+                  end_bracket: )
+            column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+        - comma: ','
+        - table_constraint:
+          - keyword: CONSTRAINT
+          - object_reference:
+              naked_identifier: PK_SessionState
+          - keyword: PRIMARY
+          - keyword: KEY
+          - keyword: NONCLUSTERED
+          - keyword: HASH
+          - bracketed_index_column_list_grammar:
+              bracketed:
+                start_bracket: (
+                index_column_definition:
+                  naked_identifier: SessionId
+                end_bracket: )
+          - relational_index_options:
+              keyword: WITH
+              bracketed:
+                start_bracket: (
+                keyword: BUCKET_COUNT
+                comparison_operator:
+                  raw_comparison_operator: '='
+                integer_literal: '16384'
+                end_bracket: )
+        - end_bracket: )
+      - table_option_statement:
+          keyword: WITH
+          bracketed:
+          - start_bracket: (
+          - keyword: MEMORY_OPTIMIZED
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: 'ON'
+          - comma: ','
+          - keyword: DURABILITY
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: SCHEMA_ONLY
+          - end_bracket: )
+  - statement_terminator: ;
+  - statement:
+      create_table_statement:
+      - keyword: CREATE
+      - keyword: TABLE
+      - table_reference:
+        - naked_identifier: dbo
+        - dot: .
+        - naked_identifier: ColumnKey
+      - bracketed:
+          start_bracket: (
+          column_definition:
+          - naked_identifier: Id
+          - data_type:
+              keyword: INT
+          - column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+          - column_constraint_segment:
+            - keyword: PRIMARY
+            - keyword: KEY
+            - keyword: NONCLUSTERED
+            - keyword: HASH
+          - column_constraint_segment:
+              relational_index_options:
+                keyword: WITH
+                bracketed:
+                  start_bracket: (
+                  keyword: BUCKET_COUNT
+                  comparison_operator:
+                    raw_comparison_operator: '='
+                  integer_literal: '1024'
+                  end_bracket: )
+          end_bracket: )
+      - table_option_statement:
+          keyword: WITH
+          bracketed:
+          - start_bracket: (
+          - keyword: MEMORY_OPTIMIZED
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: 'ON'
+          - end_bracket: )
+  - statement_terminator: ;
+  - statement:
+      create_table_statement:
+      - keyword: CREATE
+      - keyword: TABLE
+      - table_reference:
+        - naked_identifier: dbo
+        - dot: .
+        - naked_identifier: InlineHash
+      - bracketed:
+          start_bracket: (
+          column_definition:
+            naked_identifier: Id
+            data_type:
+              keyword: INT
+            column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+          comma: ','
+          table_index_segment:
+          - keyword: INDEX
+          - object_reference:
+              naked_identifier: IX_Id
+          - keyword: NONCLUSTERED
+          - keyword: HASH
+          - bracketed_index_column_list_grammar:
+              bracketed:
+                start_bracket: (
+                index_column_definition:
+                  naked_identifier: Id
+                end_bracket: )
+          - relational_index_options:
+              keyword: WITH
+              bracketed:
+                start_bracket: (
+                keyword: BUCKET_COUNT
+                comparison_operator:
+                  raw_comparison_operator: '='
+                integer_literal: '2048'
+                end_bracket: )
+          end_bracket: )
+      - table_option_statement:
+          keyword: WITH
+          bracketed:
+          - start_bracket: (
+          - keyword: MEMORY_OPTIMIZED
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: 'ON'
+          - end_bracket: )
+  - statement_terminator: ;
+  - statement:
+      create_table_statement:
+      - keyword: CREATE
+      - keyword: TABLE
+      - table_reference:
+        - naked_identifier: dbo
+        - dot: .
+        - naked_identifier: ImplicitNonclustered
+      - bracketed:
+          start_bracket: (
+          column_definition:
+            naked_identifier: Id
+            data_type:
+              keyword: INT
+            column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+          comma: ','
+          table_index_segment:
+          - keyword: INDEX
+          - object_reference:
+              naked_identifier: IX_Id
+          - keyword: HASH
+          - bracketed_index_column_list_grammar:
+              bracketed:
+                start_bracket: (
+                index_column_definition:
+                  naked_identifier: Id
+                end_bracket: )
+          - relational_index_options:
+              keyword: WITH
+              bracketed:
+                start_bracket: (
+                keyword: BUCKET_COUNT
+                comparison_operator:
+                  raw_comparison_operator: '='
+                integer_literal: '4096'
+                end_bracket: )
+          end_bracket: )
+      - table_option_statement:
+          keyword: WITH
+          bracketed:
+          - start_bracket: (
+          - keyword: MEMORY_OPTIMIZED
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: 'ON'
+          - end_bracket: )
+  - statement_terminator: ;
+  - statement:
+      create_table_statement:
+      - keyword: CREATE
+      - keyword: TABLE
+      - table_reference:
+        - naked_identifier: dbo
+        - dot: .
+        - naked_identifier: ColumnIndex
+      - bracketed:
+          start_bracket: (
+          column_definition:
+          - naked_identifier: Id
+          - data_type:
+              keyword: INT
+          - column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+          - column_constraint_segment:
+            - keyword: INDEX
+            - object_reference:
+                naked_identifier: IX_Id
+            - keyword: NONCLUSTERED
+            - keyword: HASH
+          - column_constraint_segment:
+              relational_index_options:
+                keyword: WITH
+                bracketed:
+                  start_bracket: (
+                  keyword: BUCKET_COUNT
+                  comparison_operator:
+                    raw_comparison_operator: '='
+                  integer_literal: '8192'
+                  end_bracket: )
+          end_bracket: )
+      - table_option_statement:
+          keyword: WITH
+          bracketed:
+          - start_bracket: (
+          - keyword: MEMORY_OPTIMIZED
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: 'ON'
+          - end_bracket: )
+  - statement_terminator: ;
+  - statement:
+      create_table_statement:
+      - keyword: CREATE
+      - keyword: TABLE
+      - table_reference:
+        - naked_identifier: dbo
+        - dot: .
+        - naked_identifier: CompositeKey
+      - bracketed:
+        - start_bracket: (
+        - column_definition:
+            naked_identifier: Id
+            data_type:
+              keyword: INT
+            column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+        - comma: ','
+        - column_definition:
+            naked_identifier: Category
+            data_type:
+              keyword: INT
+            column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+        - comma: ','
+        - table_constraint:
+          - keyword: CONSTRAINT
+          - object_reference:
+              naked_identifier: UQ_Id_Category
+          - keyword: UNIQUE
+          - keyword: NONCLUSTERED
+          - keyword: HASH
+          - bracketed_index_column_list_grammar:
+              bracketed:
+              - start_bracket: (
+              - index_column_definition:
+                  naked_identifier: Id
+              - comma: ','
+              - index_column_definition:
+                  naked_identifier: Category
+              - end_bracket: )
+          - relational_index_options:
+              keyword: WITH
+              bracketed:
+                start_bracket: (
+                keyword: BUCKET_COUNT
+                comparison_operator:
+                  raw_comparison_operator: '='
+                integer_literal: '65536'
+                end_bracket: )
+        - end_bracket: )
+      - table_option_statement:
+          keyword: WITH
+          bracketed:
+          - start_bracket: (
+          - keyword: MEMORY_OPTIMIZED
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: 'ON'
+          - end_bracket: )
+  - statement_terminator: ;
+  - statement:
+      create_table_statement:
+      - keyword: CREATE
+      - keyword: TABLE
+      - table_reference:
+        - naked_identifier: dbo
+        - dot: .
+        - naked_identifier: RangeIndex
+      - bracketed:
+          start_bracket: (
+          column_definition:
+          - naked_identifier: Id
+          - data_type:
+              keyword: INT
+          - column_constraint_segment:
+            - keyword: NOT
+            - keyword: 'NULL'
+          - column_constraint_segment:
+            - keyword: PRIMARY
+            - keyword: KEY
+            - keyword: NONCLUSTERED
+          comma: ','
+          table_index_segment:
+          - keyword: INDEX
+          - object_reference:
+              naked_identifier: IX_Id
+          - keyword: NONCLUSTERED
+          - bracketed_index_column_list_grammar:
+              bracketed:
+                start_bracket: (
+                index_column_definition:
+                  naked_identifier: Id
+                end_bracket: )
+          end_bracket: )
+      - table_option_statement:
+          keyword: WITH
+          bracketed:
+          - start_bracket: (
+          - keyword: MEMORY_OPTIMIZED
+          - comparison_operator:
+              raw_comparison_operator: '='
+          - keyword: 'ON'
+          - end_bracket: )
+  - statement_terminator: ;
