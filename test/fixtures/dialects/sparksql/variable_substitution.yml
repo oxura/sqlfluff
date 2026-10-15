@@ -3,7 +3,7 @@
 # computed by SQLFluff when running the tests. Please run
 # `python test/generate_parse_fixture_yml.py`  to generate them after adding or
 # altering SQL files.
-_hash: cd6bc5a9eaa59b7e4d885df67904d1a5cd6ed2d3277f8de64bf0cebb2b5348be
+_hash: 9ddf63e4543fcc966c3f98bf2f00d7079e4793082be3381cf24c3d815ae1f1c5
 file:
 - statement:
     set_statement:
@@ -221,4 +221,61 @@ file:
             alias_operator:
               keyword: AS
             naked_identifier: template_text
+- statement_terminator: ;
+- statement:
+    select_statement:
+      select_clause:
+      - keyword: SELECT
+      - select_clause_element:
+          variable_substitution: ${1st}
+          alias_expression:
+            alias_operator:
+              keyword: AS
+            naked_identifier: x
+      - comma: ','
+      - select_clause_element:
+          variable_substitution: ${system:key/name}
+          alias_expression:
+            alias_operator:
+              keyword: AS
+            naked_identifier: y
+      - comma: ','
+      - select_clause_element:
+          variable_substitution: ${hivevar:résumé}
+          alias_expression:
+            alias_operator:
+              keyword: AS
+            naked_identifier: z
+- statement_terminator: ;
+- statement:
+    select_statement:
+      select_clause:
+      - keyword: SELECT
+      - select_clause_element:
+          expression:
+          - variable_substitution: ${left-hand}
+          - binary_operator: +
+          - variable_substitution: ${right/hand}
+          alias_expression:
+            alias_operator:
+              keyword: AS
+            naked_identifier: total
+      - comma: ','
+      - select_clause_element:
+          variable_substitution: ${nested:name:part}
+          alias_expression:
+            alias_operator:
+              keyword: AS
+            naked_identifier: nested_name
+- statement_terminator: ;
+- statement:
+    select_statement:
+      select_clause:
+        keyword: SELECT
+        select_clause_element:
+          variable_substitution: ${名前}
+          alias_expression:
+            alias_operator:
+              keyword: AS
+            naked_identifier: label
 - statement_terminator: ;

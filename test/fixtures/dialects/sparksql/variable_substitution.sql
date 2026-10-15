@@ -18,3 +18,9 @@ SELECT key, count(*) FROM t GROUP BY ${group_column} ORDER BY ${sort_column};
 SET spark.sql.shuffle.partitions=${partition_count};
 
 SELECT '${not_substituted_by_sqlfluff}' AS template_text;
+
+SELECT ${1st} AS x, ${system:key/name} AS y, ${hivevar:résumé} AS z;
+
+SELECT ${left-hand}+${right/hand} AS total, ${nested:name:part} AS nested_name;
+
+SELECT ${名前} AS label;

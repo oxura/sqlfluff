@@ -76,7 +76,8 @@ provides better data quality and easier migration from traditional DBMS.
 Spark variable substitutions such as ``${var}``, ``${system:var}``, and
 ``${env:var}`` can be parsed in expressions, identifiers, ``IN`` lists, and
 ``LIMIT`` clauses. SQLFluff preserves these placeholders rather than resolving
-their values.
+their values. Names follow Spark's non-whitespace syntax, including numeric,
+Unicode, and punctuation characters.
 
 Versions of Spark prior to 3.x will only support the Hive dialect.
 
@@ -215,7 +216,8 @@ sparksql_dialect.insert_lexer_matchers(
     [
         RegexLexer(
             "variable_substitution",
-            r"\$\{[A-Za-z_][A-Za-z0-9_.:-]*\}",
+            # Mirror Spark's ConfigReader.REF_RE, including non-identifier names.
+            r"\$\{(?:\w+?:)?\S+?\}",
             CodeSegment,
         ),
     ],
