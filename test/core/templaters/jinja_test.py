@@ -88,6 +88,61 @@ def test__templater_jinja(instr, expected_outstr):
     assert str(outstr) == expected_outstr
 
 
+@pytest.mark.parametrize("macro_source", ["config", "path", "import", "inline"])
+@pytest.mark.parametrize("return_tag", ["do", "expression"])
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        ("[1, 2, 3]", "1 + 2 + 3"),
+        ("{'number': 7}", "7"),
+        ("0", "0"),
+        ("false", "FALSE"),
+        ("none", "NULL"),
+    ],
+)
+def test__templater_nested_macro_return(
+    macro_source, return_tag, value, expected, tmp_path
+):
+    """Nested returns preserve values and continue rendering the calling macro."""
+    return_call = (
+        "{% do return(" + value + ") %}"
+        if return_tag == "do"
+        else "{{ return(" + value + ") }}"
+    )
+    macros = (
+        "{% macro inner() %}" + return_call + "unreachable{% endmacro %}"
+        "{% macro outer(context, obj) %}"
+        "{%- set value = inner() -%}"
+        "{% if value is none %}NULL"
+        "{% elif value is sameas false %}FALSE"
+        "{% elif value is mapping %}{{ value['number'] }}"
+        "{% elif value is sequence %}{{ value | join(' + ') }}"
+        "{% else %}{{ value }}{% endif %} AS {{ context }}{{ obj }}"
+        "{% endmacro %}"
+    )
+    settings = {"apply_dbt_builtins": True}
+    sql = "SELECT {{ outer(context='result', obj='') }}"
+    if macro_source == "config":
+        settings["macros"] = {"nested": macros}
+    elif macro_source == "inline":
+        sql = macros + sql
+    else:
+        (tmp_path / "macros.sql").write_text(macros)
+        if macro_source == "path":
+            settings["load_macros_from_path"] = str(tmp_path)
+        else:
+            settings["loader_search_path"] = str(tmp_path)
+            sql = "{% from 'macros.sql' import outer %}" + sql
+    config = FluffConfig(
+        configs={"core": {"dialect": "ansi"}, "templater": {"jinja": settings}}
+    )
+    templated, violations = JinjaTemplater().process(
+        in_str=sql, fname=str(tmp_path / "model.sql"), config=config
+    )
+    assert violations == []
+    assert str(templated) == f"SELECT {expected} AS result"
+
+
 class RawTemplatedTestCase(NamedTuple):
     """Instances of this object are test cases for test__templater_jinja_slices."""
 
@@ -811,6 +866,7 @@ def assert_structure(yaml_loader, path, code_only=True, include_meta=False):
         ("jinja_c_dbt/dbt_builtins_zip", True, False),
         ("jinja_c_dbt/dbt_builtins_zip_strict", True, False),
         ("jinja_c_dbt/dbt_builtins_return", True, False),
+        ("jinja_c_dbt/dbt_builtins_nested_return", True, False),
         # do directive
         ("jinja_e/jinja", True, False),
         # case sensitivity and python literals

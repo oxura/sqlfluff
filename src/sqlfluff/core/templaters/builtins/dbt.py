@@ -1,6 +1,9 @@
 """Defines the jinja builtins for dbt."""
 
-from typing import Any, Callable, Union
+from typing import Any, Union
+
+from jinja2.runtime import Context, Macro
+from jinja2.sandbox import SandboxedEnvironment
 
 from sqlfluff.core.templaters.builtins.common import FunctionWrapper
 
@@ -66,22 +69,16 @@ def _builtin_return(value: Any) -> None:
     raise MacroReturn(value)
 
 
-class DbtMacroWrapper:
-    """Class that wraps macros to catch MacroReturn exceptions during execution."""
+class DbtSandboxedEnvironment(SandboxedEnvironment):
+    """Handle dbt returns at every macro call, including same-template calls."""
 
-    # Tell Jinja this object is safe to call and does not alter data.
-    # https://jinja.palletsprojects.com/en/3.0.x/sandbox/#jinja2.sandbox.SandboxedEnvironment.is_safe_callable
-    unsafe_callable = False
-    alters_data = False
-
-    def __init__(self, macro: Callable[..., Any]):
-        self.macro = macro
-
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        """Wraps jinja macro calls to handle dbt's `return` jinja function."""
+    def call(self, context: Context, obj: Any, /, *args: Any, **kwargs: Any) -> Any:
+        """Keep a return local to the macro that produced it."""
         try:
-            return self.macro(*args, **kwargs)
+            return super().call(context, obj, *args, **kwargs)
         except MacroReturn as e:
+            if not isinstance(obj, Macro):
+                raise
             return e.value
 
 

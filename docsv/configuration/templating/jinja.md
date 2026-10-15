@@ -169,6 +169,12 @@ Macros loaded from these files are available in every `.sql` file without
 requiring a Jinja `include` or `import`.  They are loaded into the
 [`Jinja Global Namespace`](https://jinja.palletsprojects.com/en/3.1.x/api/#global-namespace).
 
+With `apply_dbt_builtins = True`, a macro can use dbt's `return()` to
+return a list, dictionary, or other Python value. A return ends only that
+macro's execution: a calling macro continues rendering, including when both
+macros are defined in the same file. This also applies to macros defined in
+configuration, imported macros, and macros defined in the SQL template itself.
+
 ::: tip NOTE
 The `load_macros_from_path` setting also defines the search
 path for Jinja
