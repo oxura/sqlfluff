@@ -73,6 +73,11 @@ This implementation focuses on the `Ansi Compliant Mode`_ introduced in
 Spark3, instead of being Hive Compliant. The introduction of ANSI Compliance
 provides better data quality and easier migration from traditional DBMS.
 
+Spark variable substitutions such as ``${var}``, ``${system:var}``, and
+``${env:var}`` can be parsed in expressions, identifiers, ``IN`` lists, and
+``LIMIT`` clauses. SQLFluff preserves these placeholders rather than resolving
+their values.
+
 Versions of Spark prior to 3.x will only support the Hive dialect.
 
 .. _`Spark SQL`: https://spark.apache.org/docs/latest/sql-ref.html
@@ -204,6 +209,17 @@ sparksql_dialect.insert_lexer_matchers(
         ),
     ],
     before="newline",
+)
+
+sparksql_dialect.insert_lexer_matchers(
+    [
+        RegexLexer(
+            "variable_substitution",
+            r"\$\{[A-Za-z_][A-Za-z0-9_.:-]*\}",
+            CodeSegment,
+        ),
+    ],
+    before="dollar_quote",
 )
 
 # Set the bare functions
@@ -343,7 +359,24 @@ sparksql_dialect.replace(
         insert=[
             Ref("RawQuotedLiteralSegment"),
             Ref("BytesQuotedLiteralSegment"),
-        ]
+            Ref("VariableSubstitutionSegment"),
+        ],
+        before=Ref("ArrayLiteralSegment"),
+    ),
+    InOperatorGrammar=Sequence(
+        Ref.keyword("NOT", optional=True),
+        "IN",
+        OneOf(
+            Bracketed(
+                OneOf(
+                    Delimited(Ref("Expression_A_Grammar")),
+                    Ref("SelectableGrammar"),
+                ),
+                parse_mode=ParseMode.GREEDY,
+            ),
+            Ref("FunctionSegment"),
+            Ref("VariableSubstitutionSegment"),
+        ),
     ),
     NaturalJoinKeywordsGrammar=Sequence(
         "NATURAL",
@@ -389,6 +422,7 @@ sparksql_dialect.replace(
         Ref("QuotedIdentifierSegment"),
         Ref("SingleQuotedIdentifierSegment"),
         Ref("BackQuotedIdentifierSegment"),
+        Ref("VariableSubstitutionSegment"),
     ),
     WhereClauseTerminatorGrammar=OneOf(
         "LIMIT",
@@ -498,6 +532,9 @@ sparksql_dialect.replace(
 )
 
 sparksql_dialect.add(
+    VariableSubstitutionSegment=TypedParser(
+        "variable_substitution", CodeSegment, type="variable_substitution"
+    ),
     BackQuotedIdentifierSegment=TypedParser(
         "back_quote",
         IdentifierSegment,
@@ -2241,6 +2278,7 @@ class LimitClauseSegment(ansi.LimitClauseSegment):
             Ref("NumericLiteralSegment"),
             "ALL",
             Ref("FunctionSegment"),
+            Ref("VariableSubstitutionSegment"),
         ),
         Dedent,
     )

@@ -82,7 +82,7 @@ databricks_dialect.insert_lexer_matchers(
 databricks_dialect.insert_lexer_matchers(
     # Databricks Pipeline Parameters:
     # https://docs.databricks.com/en/delta-live-tables/parameters.html
-    # Must come before dollar_quote since both start with $
+    # Must precede Spark substitutions to retain pipeline-parameter semantics.
     [
         RegexLexer(
             "pipeline_parameter",
@@ -90,7 +90,7 @@ databricks_dialect.insert_lexer_matchers(
             CodeSegment,
         ),
     ],
-    before="dollar_quote",
+    before="variable_substitution",
 )
 
 
